@@ -82,7 +82,6 @@ export function isEmpty<T>(value: T): value is EmptyForm<T>;
 export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
   if (typeof value === 'number') return Number.isNaN(value);
-  if (typeof value === 'bigint') return false;
   if (typeof value === 'string') return value === '';
   if (Array.isArray(value)) return value.length === 0;
   if (typeof value === 'object') return Object.keys(value as object).length === 0;
