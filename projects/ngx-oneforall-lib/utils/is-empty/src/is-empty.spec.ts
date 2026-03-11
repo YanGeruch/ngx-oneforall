@@ -65,6 +65,33 @@ describe('isEmpty', () => {
         expect(val).toBeNull();
       }
     });
+
+    it('narrows union type member-by-member, not to full EmptyValue', () => {
+      // EmptyForm<string[] | null> = ([] & string[]) | null
+      // NOT the full EmptyValue union
+      const val: string[] | null = null;
+      if (isEmpty(val)) {
+        const _check: ([] & string[]) | null = val;
+        expect(_check).toBeNull();
+      }
+    });
+
+    it('narrows nullable array union correctly', () => {
+      const val: number[] | null | undefined = [];
+      if (isEmpty(val)) {
+        // val: ([] & number[]) | null | undefined
+        const _check: ([] & number[]) | null | undefined = val;
+        expect(_check).toEqual([]);
+      }
+    });
+
+    it('narrows string | null union', () => {
+      const val: string | null = '';
+      if (isEmpty(val)) {
+        const _check: '' | null = val;
+        expect(_check).toBe('');
+      }
+    });
   });
 
   describe('array filter usage', () => {

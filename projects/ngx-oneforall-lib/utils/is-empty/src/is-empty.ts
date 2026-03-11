@@ -1,11 +1,36 @@
 /**
- * Union of all "empty" value types that can be expressed in the TypeScript type system.
+ * Maps a type to its "empty" counterpart, distributed over union members.
  *
- * Covers: `null`, `undefined`, empty string `''`, empty tuple `[]`,
- * and an empty record `Record<PropertyKey, never>`.
+ * Each union member is mapped individually:
  *
- * Note: `NaN` is intentionally excluded because TypeScript has no `NaN` literal type;
- * the runtime check is performed but the type system cannot narrow to it.
+ * | Member type            | Empty form                          |
+ * |------------------------|-------------------------------------|
+ * | `T[]`                  | `[] & T[]`  (empty tuple)           |
+ * | `Record<K, V>` / `T`  | `Record<PropertyKey, never> & T`    |
+ * | `string`               | `''`                                |
+ * | `number`               | `number` (NaN has no literal type)  |
+ * | `null`                 | `null`                              |
+ * | `undefined`            | `undefined`                         |
+ * | `unknown` / other      | `EmptyValue`                        |
+ *
+ * Because this is a distributive conditional type, unions are mapped member-by-member:
+ * `EmptyForm<string[] | null>` → `([] & string[]) | null`
+ */
+// prettier-ignore
+export type EmptyForm<T> =
+  T extends unknown[]                    ? [] & T :
+  T extends Record<PropertyKey, unknown> ? Record<PropertyKey, never> & T :
+  T extends string                       ? '' :
+  T extends number                       ? number :
+  T extends null                         ? null :
+  T extends undefined                    ? undefined :
+  EmptyValue;
+
+/**
+ * Union of all "empty" value types expressible in the TypeScript type system.
+ * Used as the fallback for `EmptyForm<unknown>` and as a convenience type.
+ *
+ * Note: `NaN` is excluded because TypeScript has no `NaN` literal type.
  */
 export type EmptyValue = null | undefined | '' | [] | Record<PropertyKey, never>;
 
@@ -13,16 +38,14 @@ export type EmptyValue = null | undefined | '' | [] | Record<PropertyKey, never>
  * Type guard that checks whether a value is "empty":
  * `null`, `undefined`, `NaN`, `''`, `[]`, or `{}`.
  *
- * Overloads narrow the result type to the most precise empty form
- * that still satisfies the original type constraint:
+ * The return type is `EmptyForm<T>`, a distributive conditional type that maps
+ * each union member of `T` to its most precise empty form. Union input types
+ * produce union narrowed types instead of widening to the full `EmptyValue`:
  *
- * | Input type             | Narrowed type                       |
- * |------------------------|-------------------------------------|
- * | `T[]`                  | `[] & T[]`  (empty tuple)           |
- * | `Record<K, V>` / `T`  | `Record<PropertyKey, never> & T`    |
- * | `string`               | `''`                                |
- * | `number`               | `number` (NaN has no literal type)  |
- * | `unknown`              | `EmptyValue`                        |
+ * ```ts
+ * declare const val: string[] | null;
+ * if (isEmpty(val)) { val } // val: ([] & string[]) | null
+ * ```
  *
  * @example
  * // Array
@@ -44,22 +67,16 @@ export type EmptyValue = null | undefined | '' | [] | Record<PropertyKey, never>
  * if (isEmpty(NaN)) { ... } // true at runtime
  *
  * @example
- * // Unknown / combined guard
- * declare const val: unknown;
- * if (isEmpty(val)) { val } // val: EmptyValue
+ * // Union — each member mapped independently
+ * declare const val: string[] | null | undefined;
+ * if (isEmpty(val)) { val } // val: ([] & string[]) | null | undefined
  *
  * @example
  * // Array filter
  * const matrix: number[][] = [[], [1], [], [2, 3]];
  * const empty = matrix.filter(isEmpty); // ([] & number[])[]
  */
-export function isEmpty<T>(value: T[]): value is [] & T[];
-export function isEmpty<T extends Record<PropertyKey, unknown>>(
-  value: T,
-): value is Record<PropertyKey, never> & T;
-export function isEmpty(value: string): value is '';
-export function isEmpty(value: number): value is number;
-export function isEmpty(value: unknown): value is EmptyValue;
+export function isEmpty<T>(value: T): value is EmptyForm<T>;
 export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
   if (typeof value === 'number') return Number.isNaN(value);
