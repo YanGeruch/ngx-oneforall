@@ -103,7 +103,7 @@ export class UserService {
 | **Services** | `cache`, `clipboard`, `cookie`, `device`, `event`, `history`, `idle`, `jwt`, `logger`, `network-status`, `shortcut`, `storage` |
 | **Signals** | `breakpoint-matcher`, `debounced-signal`, `deep-computed`, `event-signal`, `interval-signal`, `route-param-signal`, `route-query-param-signal`, `router-event-signal`, `state-signal`, `storage-signal`, `throttled-signal`, `websocket-signal` |
 | **Types** | `callable`, `deep-partial`, `is-arrow-function`, `keys-of-type`, `omit-by-value`, `partial-only`, `pick-by-value`, `required-only`, `simple-changes` |
-| **Utils** | `base64-url`, `download-link`, `file-base64`, `find-type`, `hash`, `host-platform`, `is-key-defined`, `is-number`, `is-present`, `is-record`, `normalize-key`, `safe-await`, `safe-serialize`, `unique-component-id` |
+| **Utils** | `base64-url`, `download-link`, `file-base64`, `find-type`, `hash`, `host-platform`, `is-key-defined`, `is-null-or-undefined`, `is-number`, `is-present`, `is-record`, `normalize-key`, `safe-await`, `safe-serialize`, `unique-component-id` |
 | **Validators** | `credit-card`, `date`, `match-field`, `max-date`, `min-date`, `min-length-trimmed`, `not-blank`, `number`, `phone`, `range`, `range-length`, `url` |
 
 ## MCP Server

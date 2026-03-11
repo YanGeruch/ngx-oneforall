@@ -67,6 +67,7 @@ if (isArray(value)) {
 |----------|------------|
 | `isNull(v)` | `v is null` |
 | `isUndefined(v)` | `v is undefined` |
+| `isNullOrUndefined(v)` | `v is null \| undefined` |
 | `isBoolean(v)` | `v is boolean` |
 | `isString(v)` | `v is string` |
 | `isNumber(v)` | `v is number` |

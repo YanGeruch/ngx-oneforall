@@ -5,6 +5,7 @@ import {
   isError,
   isArrayBuffer,
   isRegexp,
+  isNullOrUndefined,
 } from './find-type';
 import { Types } from '../../../constants/src/types';
 
@@ -162,5 +163,13 @@ describe('findType', () => {
     expect(isRegexp(/test/)).toBe(true);
     expect(isRegexp(new RegExp('test'))).toBe(true);
     expect(isRegexp('test')).toBe(false);
+  });
+
+  it('should detect null or undefined with isNullOrUndefined', () => {
+    expect(isNullOrUndefined(null)).toBe(true);
+    expect(isNullOrUndefined(undefined)).toBe(true);
+    expect(isNullOrUndefined(0)).toBe(false);
+    expect(isNullOrUndefined('')).toBe(false);
+    expect(isNullOrUndefined(false)).toBe(false);
   });
 });

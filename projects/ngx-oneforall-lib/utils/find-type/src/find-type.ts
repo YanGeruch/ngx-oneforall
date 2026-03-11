@@ -1,4 +1,7 @@
 import { Types } from 'ngx-oneforall/constants';
+import { isNullOrUndefined } from 'ngx-oneforall/utils/is-null-or-undefined';
+
+export { isNullOrUndefined };
 
 /**
  * Determines the JavaScript type of a value.
