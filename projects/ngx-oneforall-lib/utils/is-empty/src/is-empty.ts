@@ -9,7 +9,7 @@
  * | `Record<K, V>` / `T`  | `Record<PropertyKey, never> & T`    |
  * | `string`               | `''`                                |
  * | `number`               | `number` (NaN has no literal type)  |
- * | `bigint`               | `0n`                                |
+ * | `bigint`               | `never` (no empty bigint exists)    |
  * | `null`                 | `null`                              |
  * | `undefined`            | `undefined`                         |
  * | `unknown` / other      | `EmptyValue`                        |
@@ -23,7 +23,7 @@ export type EmptyForm<T> =
   T extends Record<PropertyKey, unknown> ? Record<PropertyKey, never> & T :
   T extends string                       ? '' :
   T extends number                       ? number :
-  T extends bigint                       ? 0n :
+  T extends bigint                       ? never :
   T extends null                         ? null :
   T extends undefined                    ? undefined :
   EmptyValue;
@@ -34,7 +34,7 @@ export type EmptyForm<T> =
  *
  * Note: `NaN` is excluded because TypeScript has no `NaN` literal type.
  */
-export type EmptyValue = null | undefined | '' | 0n | [] | Record<PropertyKey, never>;
+export type EmptyValue = null | undefined | '' | [] | Record<PropertyKey, never>;
 
 /**
  * Type guard that checks whether a value is "empty":
@@ -82,7 +82,7 @@ export function isEmpty<T>(value: T): value is EmptyForm<T>;
 export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
   if (typeof value === 'number') return Number.isNaN(value);
-  if (typeof value === 'bigint') return value === 0n;
+  if (typeof value === 'bigint') return false;
   if (typeof value === 'string') return value === '';
   if (Array.isArray(value)) return value.length === 0;
   if (typeof value === 'object') return Object.keys(value as object).length === 0;

@@ -14,7 +14,7 @@ describe('isEmpty', () => {
   });
 
   describe('bigint', () => {
-    it('should return true for 0n', () => expect(isEmpty(0n)).toBe(true));
+    it('should return false for 0n', () => expect(isEmpty(0n)).toBe(false));
     it('should return false for positive bigint', () => expect(isEmpty(1n)).toBe(false));
     it('should return false for negative bigint', () => expect(isEmpty(-1n)).toBe(false));
   });
@@ -67,7 +67,7 @@ describe('isEmpty', () => {
     it('narrows unknown to EmptyValue union', () => {
       const val: unknown = null;
       if (isEmpty(val)) {
-        // val: EmptyValue (null | undefined | '' | 0n | [] | Record<PropertyKey, never>)
+        // val: EmptyValue (null | undefined | '' | [] | Record<PropertyKey, never>)
         expect(val).toBeNull();
       }
     });
@@ -99,12 +99,10 @@ describe('isEmpty', () => {
       }
     });
 
-    it('narrows bigint to 0n', () => {
+    it('narrows bigint to never (no bigint is empty)', () => {
       const val: bigint = 0n;
-      if (isEmpty(val)) {
-        const _check: 0n = val;
-        expect(_check).toBe(0n);
-      }
+      // isEmpty(val) is always false — type narrows to never inside the branch
+      expect(isEmpty(val)).toBe(false);
     });
   });
 
