@@ -13,6 +13,12 @@ describe('isEmpty', () => {
     it('should return false for negative numbers', () => expect(isEmpty(-1)).toBe(false));
   });
 
+  describe('bigint', () => {
+    it('should return true for 0n', () => expect(isEmpty(0n)).toBe(true));
+    it('should return false for positive bigint', () => expect(isEmpty(1n)).toBe(false));
+    it('should return false for negative bigint', () => expect(isEmpty(-1n)).toBe(false));
+  });
+
   describe('string', () => {
     it('should return true for empty string', () => expect(isEmpty('')).toBe(true));
     it('should return false for non-empty string', () => expect(isEmpty('hello')).toBe(false));
@@ -61,7 +67,7 @@ describe('isEmpty', () => {
     it('narrows unknown to EmptyValue union', () => {
       const val: unknown = null;
       if (isEmpty(val)) {
-        // val: EmptyValue (null | undefined | '' | [] | Record<PropertyKey, never>)
+        // val: EmptyValue (null | undefined | '' | 0n | [] | Record<PropertyKey, never>)
         expect(val).toBeNull();
       }
     });
@@ -90,6 +96,14 @@ describe('isEmpty', () => {
       if (isEmpty(val)) {
         const _check: '' | null = val;
         expect(_check).toBe('');
+      }
+    });
+
+    it('narrows bigint to 0n', () => {
+      const val: bigint = 0n;
+      if (isEmpty(val)) {
+        const _check: 0n = val;
+        expect(_check).toBe(0n);
       }
     });
   });
